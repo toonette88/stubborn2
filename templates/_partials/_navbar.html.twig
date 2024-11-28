@@ -1,0 +1,34 @@
+<header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">        
+        <div class="container-fluid">
+            <div class="d-flex flex-column">
+                <div>
+                    <a class="navbar-brand" href="/">
+                        <img src="{{ asset('images/Logo.png')}}" alt="Logo" height="100">
+                    </a>
+                </div>
+                <div class="badge text-nowrap text-bg-light justify-content-end" style="width:0.5rem;" >
+                     Don't compromise on your look
+                </div>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end align-self-start" id="navbarNavAltMarkup">
+                <div class="navbar-nav nav-underline ">
+                    <a class="nav-link active" aria-current="page" href="#">Accueil</a>
+                    {% if app.user  %}
+                        <a class="nav-link" href="#">Boutique</a>
+                        {% if is_granted('ROLE_USER') %}
+                            <a class="nav-link" href="#">Panier</a>
+                        {% endif %}
+                        <a class="nav-link" href="#">Se déconnecter</a>
+                    {% else  %}    
+                        <a class="nav-link" href="#">S'inscrire</a>
+                        <a class="nav-link">Se connecter</a>
+                    {% endif  %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
