@@ -1,5 +1,12 @@
-@import "./bootstrap.min.css";
 
 body {
-    background-color: skyblue;
+    background-color: white;
+}
+
+footer {
+    padding : 50px;
+}
+.card{
+margin: 30px;
+
 }

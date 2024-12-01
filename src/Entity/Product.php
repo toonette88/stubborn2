@@ -27,7 +27,7 @@ class Product
     private ?string $image = null;
 
     #[ORM\Column]
-    private ?bool $isFeatured = null;
+    private ?bool $is_featured = null;
 
     #[ORM\Column]
     private ?int $stockXS = null;
@@ -99,12 +99,12 @@ class Product
 
     public function isFeatured(): ?bool
     {
-        return $this->isFeatured;
+        return $this->is_featured;
     }
 
     public function setFeatured(bool $isFeatured): static
     {
-        $this->isFeatured = $isFeatured;
+        $this->is_featured = $isFeatured;
 
         return $this;
     }
