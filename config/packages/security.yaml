@@ -21,7 +21,11 @@ security:
                 path: app_logout
                 # where to redirect after logout
                 # target: app_any_route
-
+            entry_point: form_login
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                default_target_path: app_product
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -33,6 +37,8 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/product, roles: ROLE_USER }
+
 
 when@test:
     security:

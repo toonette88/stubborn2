@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends AbstractController
 {
     #[Route('/product', name: 'app_product')]
+    #[IsGranted('ROLE_USER')]
     public function index(EntityManagerInterface $entityManager, Request $request): Response
     {
         $priceRanges = [
