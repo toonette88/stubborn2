@@ -10,3 +10,9 @@ footer {
 margin: 30px;
 
 }
+
+.btn{
+    background-color: lightskyblue;
+    color: white;
+    font-weight: bold;
+}

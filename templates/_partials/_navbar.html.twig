@@ -22,10 +22,10 @@
                         {% if is_granted('ROLE_USER') %}
                             <a class="nav-link" href="#">Panier</a>
                         {% endif %}
-                        <a class="nav-link" href="#">Se déconnecter</a>
+                        <a class="nav-link" href="/logout">Se déconnecter</a>
                     {% else  %}    
                         <a class="nav-link" href="#">S'inscrire</a>
-                        <a class="nav-link">Se connecter</a>
+                        <a class="nav-link" href="/login">Se connecter</a>
                     {% endif  %}
                 </div>
             </div>
