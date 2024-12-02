@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block body %}
+<div>
+    <a href="/product"> Retour à la liste des produits</a>
+</div>
+<div class="container d-flex justify-content-center my-5">
+    <div class="border border-black">
+        <div class="col d-flex">
+                <img src="{{ asset('images/' ~ product.image ~ '.jpeg') }}" class="card-img-top" alt="{{ product.name }}">
+        <div>
+        <div class="row container d-flex p-4">
+            <div class="col">
+                <p>Nom: {{ product.name }}</p>
+                <p>Prix: {{ product.price }}€</p>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="size">Taille</label>
+                    <select name="size" id="size" class="form-control form-select m-2">
+                        {% for size, stock in {
+                            'XS': product.stockXS,
+                            'S': product.stockS,
+                            'M': product.stockM,
+                            'L': product.stockL,
+                            'XL': product.stockXL,
+                        } %}
+                            <option value="{{ size }}" {% if stock == 0 %}disabled{% endif %}>
+                                {{ size }} {% if stock == 0 %}(Rupture de stock){% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button class="btn">AJOUTER AU PANIER</button>
+        <div>
+    </div>
+</div>
+{% endblock %}
