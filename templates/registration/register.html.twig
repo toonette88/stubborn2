@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-center my-5">
+    <div class="border border-black">
+        {% for flash_error in app.flashes('verify_email_error') %}
+            <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+        {% endfor %}
+
+        <div class="border-bottom border-primary-subtle p-1 mx-2">
+            <p>S'inscrire</p>
+        </div>
+        <div class="p-2">
+            {{ form_errors(registrationForm) }}
+            <div class="p-2">
+                {{ form_start(registrationForm) }}
+                {{ form_row(registrationForm.name)  }}
+                {{ form_row(registrationForm.email) }}
+            </div>
+            <div class="p-3 mb-3">
+                {{ form_row(registrationForm.adress)}}
+            </div>
+            <div class="p-2 mt-3 border-bottom border-primary-subtle">
+                <div class="p-2">
+                    {{ form_row(registrationForm.plainPassword) }}
+                </div>
+                <div class="p-2">
+                    <label for="confirmPassword">Confirmez le mot de passe :</label></br>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <small id="passwordMatchMessage" class="text-danger" style="display: none;">Les mots de passe ne correspondent pas.</small>
+                </div>
+                <button class="btn p-2" type="submit" id="submitButton" disabled>
+                    Créer un compte
+                </button></br>
+            </div>
+            <div class="py-3 px-2">
+                <label for="inputBtn">Déjà inscrit ?</label></br>
+                <a class="btn" href="{{ path('app_login')}}">Se Conncter</a>
+            </div>     
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

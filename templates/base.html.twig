@@ -9,9 +9,7 @@
         {% block stylesheets %}
         {% endblock %}
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
+        
     </head>
     <body>
 
@@ -21,8 +19,9 @@
         
         {% include "_partials/_footer.html.twig" %}
         
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
         <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('app.js') }}"></script>
-
     </body>
 </html>
