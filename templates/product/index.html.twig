@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Boutique{% endblock %}
+
+{% block body %}
+<div class="row row-cols-1 row-cols-md-3 g-4 p-2">
+    <form method="get" action="{{ path('app_product') }}">
+        <div class="d-flex align-items-center py-4">
+            <select name="priceRange" id="priceRange" class="form-select m-2">
+                <option value="">Toutes les fourchettes</option>
+                {% for rangeKey, rangeValues in priceRanges %}
+                    <option value="{{ rangeKey }}" {% if rangeKey == selectedRange %}selected{% endif %}>
+                        {{ rangeValues[0] }}€ - {{ rangeValues[1] }}€
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </div>
+    </form>
+    {% if products is not empty %}
+        {% for product in products %}
+            <div class="col">
+                {% include "_partials/_card.html.twig" with { product: product } %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Aucun produit ne correspond à cette fourchette de prix.</p>
+    {% endif %}
+</div>
+{% endblock %}

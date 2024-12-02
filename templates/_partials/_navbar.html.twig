@@ -16,9 +16,9 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end align-self-start" id="navbarNavAltMarkup">
                 <div class="navbar-nav nav-underline ">
-                    <a class="nav-link active" aria-current="page" href="#">Accueil</a>
+                    <a class="nav-link active" aria-current="page" href="/">Accueil</a>
                     {% if app.user  %}
-                        <a class="nav-link" href="#">Boutique</a>
+                        <a class="nav-link" href="/product">Boutique</a>
                         {% if is_granted('ROLE_USER') %}
                             <a class="nav-link" href="#">Panier</a>
                         {% endif %}
