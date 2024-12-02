@@ -1,5 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './bootstrap.js';
+import './js/passwordCheck.js';
+
 /*
  * Welcome to your app's main JavaScript file!
  *
