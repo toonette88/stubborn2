@@ -37,4 +37,16 @@ class ProductController extends AbstractController
             'selectedRange' => $selectedRange,
         ]);
     }
+
+    #[Route('/product/{id}', name:'app_product_detail')]
+    #[IsGranted('ROLE_USER')]
+    public function show(Product $product): Response
+    {
+        // Cette méthode récupère un produit par son ID (automatiquement grâce à la correspondance des paramètres)
+        return$this->render('product/detail.html.twig', [
+            'product' => $product,
+        ]);
+    }
 }
+
+
