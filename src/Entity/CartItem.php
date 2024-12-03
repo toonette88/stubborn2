@@ -13,32 +13,42 @@ class CartItem
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 65)]
-    private ?string $product = null;
+    #[ORM\ManyToOne(inversedBy: 'items', targetEntity: Cart::class)]
+    private ?Cart $cart = null;
+
+    #[ORM\ManyToOne(targetEntity: Product::class)]
+    private ?Product $product = null;
 
     #[ORM\Column]
-    private ?int $quantity = null;
+    private ?int $quantity;
 
-    #[ORM\Column(length: 2)]
-    private ?string $size = null;
-
-    #[ORM\ManyToOne(inversedBy: 'items')]
-    private ?Cart $items = null;
+    #[ORM\Column(length: 5)]
+    private ?string $size;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getProduct(): ?string
+    public function getCart(): ?Cart
+    {
+        return $this->cart;
+    }
+
+    public function setCart(?Cart $cart): self
+    {
+        $this->cart = $cart;
+        return $this;
+    }
+
+    public function getProduct(): ?Product
     {
         return $this->product;
     }
 
-    public function setProduct(string $product): static
+    public function setProduct(?Product $product): self
     {
         $this->product = $product;
-
         return $this;
     }
 
@@ -47,10 +57,9 @@ class CartItem
         return $this->quantity;
     }
 
-    public function setQuantity(int $quantity): static
+    public function setQuantity(int $quantity): self
     {
         $this->quantity = $quantity;
-
         return $this;
     }
 
@@ -59,22 +68,9 @@ class CartItem
         return $this->size;
     }
 
-    public function setSize(string $size): static
+    public function setSize(string $size): self
     {
         $this->size = $size;
-
-        return $this;
-    }
-
-    public function getItems(): ?Cart
-    {
-        return $this->items;
-    }
-
-    public function setItems(?Cart $items): static
-    {
-        $this->items = $items;
-
         return $this;
     }
 }

@@ -4,13 +4,10 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['name'])]
-#[UniqueEntity(fields: ['name'], message: "Ce nom d'utilisateur est déjà pris")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -21,15 +18,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
 
@@ -42,11 +33,58 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $adress = null;
 
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: Cart::class)]
+    private ?Cart $cart = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    public function getCart(): ?Cart
+    {
+        return $this->cart;
+    }
+
+    public function setCart(?Cart $cart): self
+    {
+        $this->cart = $cart;
+
+        return $this;
+    }
+
+    // Méthode pour obtenir les rôles
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // Garantie que l'utilisateur aura au moins le rôle ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    // Méthode pour définir les rôles
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    // Méthode pour obtenir l'identifiant de l'utilisateur
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->name;
+    }
+
+    // Méthode pour effacer les informations sensibles, comme le mot de passe en clair
+    public function eraseCredentials(): void
+    {
+        // Par exemple, si vous avez une propriété "plainPassword" pour stocker un mot de passe non haché temporairement, vous pouvez la nettoyer ici
+        // $this->plainPassword = null;
+    }
+
+    // Getter et setter pour les autres propriétés comme email, password, etc.
     public function getEmail(): ?string
     {
         return $this->email;
@@ -59,96 +97,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->name;
-    }
-
-    /**
-     * @see UserInterface
-     *
-     * @return list<string>
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    /**
-     * @param list<string> $roles
-     */
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
+    // **Implémentation de la méthode getPassword()**
     public function getPassword(): ?string
     {
         return $this->password;
     }
 
+    // **Implémentation de la méthode setPassword()**
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials(): void
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
-    }
-
-    public function isVerified(): bool
-    {
-        return $this->isVerified;
-    }
-
-    public function setVerified(bool $isVerified): static
-    {
-        $this->isVerified = $isVerified;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getAdress(): ?string
-    {
-        return $this->adress;
-    }
-
-    public function setAdress(string $adress): static
-    {
-        $this->adress = $adress;
 
         return $this;
     }

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1>Paiement</h1>
+        <p>Montant total : {{ totalAmount }}€</p>
+        <form action="{{ path('app_payment') }}" method="POST">
+            <button type="submit" class="btn btn-primary">Passer au paiement</button>
+        </form>
+    </div>
+{% endblock %}

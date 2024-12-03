@@ -15,13 +15,11 @@ class Cart
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'cart')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
     private ?User $user = null;
 
-    /**
-     * @var Collection<int, CartItem>
-     */
-    #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'items')]
+    #[ORM\OneToMany(mappedBy: 'cart', targetEntity: CartItem::class, cascade: ['persist', 'remove'])]
     private Collection $items;
 
     public function __construct()
@@ -39,37 +37,33 @@ class Cart
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, CartItem>
-     */
     public function getItems(): Collection
     {
         return $this->items;
     }
 
-    public function addItem(CartItem $item): static
+    public function addItem(CartItem $item): self
     {
         if (!$this->items->contains($item)) {
             $this->items->add($item);
-            $item->setItems($this);
+            $item->setCart($this);
         }
 
         return $this;
     }
 
-    public function removeItem(CartItem $item): static
+    public function removeItem(CartItem $item): self
     {
         if ($this->items->removeElement($item)) {
-            // set the owning side to null (unless already changed)
-            if ($item->getItems() === $this) {
-                $item->setItems(null);
+            if ($item->getCart() === $this) {
+                $item->setCart(null);
             }
         }
 
