@@ -8,7 +8,7 @@
       </div>
       <div class="col d-flex justify-content-end align-items-center">
         {% if is_granted('ROLE_USER') %}
-          <a class="btn" href="{{path('app_product_detail', {id: product.id})}}">Voir</a>
+          <a class="btn border border-black product-btn" href="{{path('app_product_detail', {id: product.id})}}">Voir</a>
         {% endif %}
       </div>
     </div>

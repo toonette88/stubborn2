@@ -19,7 +19,7 @@
                     {% if app.user  %}
                         <a class="nav-link" href="/product">Boutique</a>
                         {% if is_granted('ROLE_USER') %}
-                            <a class="nav-link" href="#">Panier</a>
+                            <a class="nav-link" href="/cart">Panier</a>
                         {% endif %}
                         <a class="nav-link" href="/logout">Se déconnecter</a>
                     {% else  %}    

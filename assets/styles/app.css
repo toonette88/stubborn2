@@ -7,12 +7,33 @@ footer {
     padding : 50px;
 }
 .card{
-margin: 30px;
+    margin: 30px;
+    height: 100%;
 
 }
 
-.btn{
+.card-body {
+    height: 100%;
+}
+
+.product-btn{
     background-color: lightskyblue;
     color: white;
     font-weight: bold;
 }
+
+.img-small{
+    max-width: 200px;
+}
+
+.uniform-size {
+    width: 300px; /* Même largeur pour tous */
+    height: 50px; /* Même hauteur pour tous */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-sizing: border-box; /* Inclut les bordures et padding dans les dimensions */
+}
+
+
