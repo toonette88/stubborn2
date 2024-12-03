@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Cart;
+use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +18,7 @@ class PaymentController extends AbstractController
     public function payment(Request $request): Response
     {
         // Récupérer le panier de l'utilisateur connecté
-        $cart = $this->getUser()->getCart(); // Assurez-vous que l'utilisateur est connecté
+        $cart = $this->getUser()->getCart();
         $totalAmount = 0;
 
         // Calculer le montant total du panier
@@ -34,9 +36,9 @@ class PaymentController extends AbstractController
                 'line_items' => [
                     [
                         'price_data' => [
-                            'currency' => 'eur', // Devise utilisée
+                            'currency' => 'eur',
                             'product_data' => [
-                                'name' => 'Votre panier', // Nom du produit (peut être plus détaillé)
+                                'name' => 'Votre panier',
                             ],
                             'unit_amount' => $totalAmount * 100, // Montant total en centimes (Stripe prend en centimes)
                         ],
@@ -60,8 +62,21 @@ class PaymentController extends AbstractController
 
     // Route appelée en cas de paiement réussi
     #[Route('/payment/success', name: 'payment_success')]
-    public function paymentSuccess(): Response
+    public function paymentSuccess(EntityManagerInterface $entityManager): Response
     {
+        // Vider le panier après un paiement réussi
+        $user = $this->getUser();
+        $cart = $user->getCart();
+
+        // Effacer les éléments du panier
+        foreach ($cart->getItems() as $item) {
+            $cart->removeItem($item);  // Supposons que vous avez une méthode removeItem
+        }
+
+        // Sauvegarder le panier vide
+        $entityManager->flush();
+
+        // Renvoyer une réponse de succès
         return $this->render('payment/success.html.twig');
     }
 

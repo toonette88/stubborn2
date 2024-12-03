@@ -16,6 +16,15 @@ class CartRepository extends ServiceEntityRepository
         parent::__construct($registry, Cart::class);
     }
 
+    // Sauvegarder le panier après modification
+    public function save(Cart $cart, bool $flush = false): void
+    {
+        $this->_em->persist($cart);
+        if ($flush) {
+            $this->_em->flush();
+        }
+    }
+
     //    /**
     //     * @return Cart[] Returns an array of Cart objects
     //     */
