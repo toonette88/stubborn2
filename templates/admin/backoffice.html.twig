@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Backoffice{% endblock %}
+
+{% block body %}
+<h1>Backoffice</h1>
+
+<div class="card mb-3 d-flex flex-column">
+    {{ form_start(add_form) }}
+    <div class="row g-0">
+        <!-- Image du produit -->
+        <div class="col-md-3 p-2">
+            {% if add_form.image.vars.value is not empty %}
+                <!-- Affiche l'image enregistrée si elle existe -->
+                <img class="img-xsmall" src="{{ asset('images/' ~ add_form.image.vars.value) }}" class="card-img-top img-small" alt="{{ add_form.name.vars.value }}">
+            {% else %}
+                <!-- Affiche le champ pour télécharger une image si l'image n'existe pas encore -->
+                <p>{{ form_row(add_form.image) }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Détails du produit -->
+        <div class="col-md-8">
+            <div class="card-body d-flex flex-column">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td>{{ form_row(add_form.name) }}</td>
+                            <td>{{ form_row(add_form.price) }}</td>
+                            <td>{{ form_row(add_form.stockXS) }}</td>
+                            <td>{{ form_row(add_form.stockS) }}</td>
+                            <td>{{ form_row(add_form.stockM) }}</td>
+                            <td>{{ form_row(add_form.stockL) }}</td>
+                            <td>{{ form_row(add_form.stockXL) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="mt-auto d-flex justify-content-end">
+                    <button type="submit" class="btn border border-black uniform-size">AJOUTER</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ form_end(add_form) }}
+</div>
+
+<hr>
+
+{% for product in products %}
+    <div class="card mb-3 d-flex flex-column">
+        {{ form_start(edit_forms[product.id]) }}
+            <div class="row g-0">
+                <!-- Image du produit -->
+                <div class="col-md-3 p-2">
+                    <img class="img-xsmall" src="{{ asset('images/' ~ product.image) }}" alt="{{ product.name }}">
+                    <p>{{ form_row(edit_forms[product.id].is_featured) }}</p>
+                </div>
+
+                <!-- Détails du produit -->
+                <div class="col-md-8">
+                    <div class="card-body d-flex flex-column">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>{{ form_row(edit_forms[product.id].name) }}</td>
+                                    <td>{{ form_row(edit_forms[product.id].price) }}</td>
+                                    <td>{{ form_row(edit_forms[product.id].stockXS) }}</td>
+                                    <td>{{ form_row(edit_forms[product.id].stockS) }}</td>
+                                    <td>{{ form_row(edit_forms[product.id].stockM) }}</td>
+                                    <td>{{ form_row(edit_forms[product.id].stockL) }}</td>
+                                    <td>{{ form_row(edit_forms[product.id].stockXL) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="mt-auto d-flex justify-content-end">
+                            <a class="btn border border-black uniform-size m-2" href="{{path('admin_product_delete', {id: product.id})}}">SUPPRIMER</a>
+                            <a class="btn border border-black uniform-size m-2" href="{{path('admin_product_edit', {id: product.id})}}">MODIFIER</a>                 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{ form_end(add_form) }}
+    </div>
+  
+{% endfor %}
+
+{% endblock %}

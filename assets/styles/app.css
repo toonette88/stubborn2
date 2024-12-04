@@ -14,6 +14,7 @@ footer {
 
 .card-body {
     height: 100%;
+    padding: 1rem
 }
 
 .product-btn{
@@ -26,6 +27,11 @@ footer {
     max-width: 200px;
 }
 
+.img-xsmall{
+    padding-left: 20px;
+    max-width: 150px;
+}
+
 .uniform-size {
     width: 300px; /* Même largeur pour tous */
     height: 50px; /* Même hauteur pour tous */
@@ -35,5 +41,6 @@ footer {
     text-align: center;
     box-sizing: border-box; /* Inclut les bordures et padding dans les dimensions */
 }
+
 
 

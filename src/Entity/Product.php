@@ -44,6 +44,12 @@ class Product
     #[ORM\Column]
     private ?int $stockXL = null;
 
+    public function __construct()
+    {
+        // Initialiser is_featured à true pour chaque nouveau produit
+        $this->is_featured = true;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -57,7 +63,6 @@ class Product
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -69,7 +74,6 @@ class Product
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -81,7 +85,6 @@ class Product
     public function setPrice(float $price): static
     {
         $this->price = $price;
-
         return $this;
     }
 
@@ -93,7 +96,6 @@ class Product
     public function setImage(string $image): static
     {
         $this->image = $image;
-
         return $this;
     }
 
@@ -105,7 +107,6 @@ class Product
     public function setFeatured(bool $isFeatured): static
     {
         $this->is_featured = $isFeatured;
-
         return $this;
     }
 
@@ -117,7 +118,6 @@ class Product
     public function setStockXS(int $stockXS): static
     {
         $this->stockXS = $stockXS;
-
         return $this;
     }
 
@@ -129,7 +129,6 @@ class Product
     public function setStockS(int $stockS): static
     {
         $this->stockS = $stockS;
-
         return $this;
     }
 
@@ -141,7 +140,6 @@ class Product
     public function setStockM(int $stockM): static
     {
         $this->stockM = $stockM;
-
         return $this;
     }
 
@@ -153,7 +151,6 @@ class Product
     public function setStockL(int $stockL): static
     {
         $this->stockL = $stockL;
-
         return $this;
     }
 
@@ -165,7 +162,6 @@ class Product
     public function setStockXL(int $stockXL): static
     {
         $this->stockXL = $stockXL;
-
         return $this;
     }
 }
