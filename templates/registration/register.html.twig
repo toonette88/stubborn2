@@ -13,9 +13,9 @@
             <p>S'inscrire</p>
         </div>
         <div class="p-2">
+            {{ form_start(registrationForm) }}
             {{ form_errors(registrationForm) }}
             <div class="p-2">
-                {{ form_start(registrationForm) }}
                 {{ form_row(registrationForm.name)  }}
                 {{ form_row(registrationForm.email) }}
             </div>
@@ -24,22 +24,19 @@
             </div>
             <div class="p-2 mt-3 border-bottom border-primary-subtle">
                 <div class="p-2">
-                    {{ form_row(registrationForm.plainPassword) }}
-                </div>
+                    {{ form_row(registrationForm.plainPassword.first) }}                </div>
                 <div class="p-2">
-                    <label for="confirmPassword">Confirmez le mot de passe :</label></br>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required>
-                    <small id="passwordMatchMessage" class="text-danger" style="display: none;">Les mots de passe ne correspondent pas.</small>
+                    {{ form_row(registrationForm.plainPassword.second) }}
                 </div>
-                <button class="btn p-2" type="submit" id="submitButton" disabled>
+                <button class="btn border border-black p-2" type="submit" id="submitButton" >
                     Créer un compte
                 </button></br>
+                {{ form_end(registrationForm) }}
             </div>
             <div class="py-3 px-2">
                 <label for="inputBtn">Déjà inscrit ?</label></br>
-                <a class="btn" href="{{ path('app_login')}}">Se Connecter</a>
+                <a class="btn border border-black" href="{{ path('app_login')}}">Se Connecter</a>
             </div>     
-            {{ form_end(registrationForm) }}
         </div>
     </div>
 </div>

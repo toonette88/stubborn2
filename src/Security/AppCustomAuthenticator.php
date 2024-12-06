@@ -27,27 +27,33 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-        $name = $request->getPayload()->getString('name');
+        // Récupération des informations du formulaire
+        $username = $request->request->get('name');
+        $password = $request->request->get('password');
+        $csrfToken = $request->request->get('_csrf_token');
 
-        $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $name);
+        // Sauvegarde du nom d'utilisateur dans la session
+        $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $username);
 
+        // Création du Passport avec les informations du formulaire
         return new Passport(
-            new UserBadge($name),
-            new PasswordCredentials($request->getPayload()->getString('password')),
+            new UserBadge($username),
+            new PasswordCredentials($password),
             [
-                new CsrfTokenBadge('authenticate', $request->getPayload()->getString('_csrf_token')),            ]
+                new CsrfTokenBadge('authenticate', $csrfToken),  // Vérification du token CSRF
+            ]
         );
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        // Redirection vers la page précédente ou vers une page par défaut
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
 
-        // For example:
+        // Redirection vers la page d'accueil (ou toute autre page)
         return new RedirectResponse($this->urlGenerator->generate('app_home'));
-        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
 
     protected function getLoginUrl(Request $request): string

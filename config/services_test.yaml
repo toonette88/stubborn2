@@ -1,0 +1,3 @@
+services:
+    Symfony\Component\Mailer\MailerInterface: '@mailer'
+    Symfony\Component\Mailer\Transport\TransportInterface: '@mailer.transport'
