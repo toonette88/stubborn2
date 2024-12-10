@@ -102,10 +102,10 @@ class ProductTest extends TestCase
         $product = new Product();
 
         // Teste le setter et le getter pour 'is_featured'
-        $product->setFeatured(false);
+        $product->setIsFeatured(false);
         $this->assertFalse($product->isFeatured());
 
-        $product->setFeatured(true);
+        $product->setIsFeatured(true);
         $this->assertTrue($product->isFeatured());
     }
 }

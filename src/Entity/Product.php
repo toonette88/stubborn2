@@ -23,7 +23,7 @@ class Product
     #[ORM\Column]
     private ?float $price = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
     #[ORM\Column]
@@ -104,7 +104,7 @@ class Product
         return $this->is_featured;
     }
 
-    public function setFeatured(bool $isFeatured): static
+    public function setIsFeatured(bool $isFeatured): static
     {
         $this->is_featured = $isFeatured;
         return $this;
