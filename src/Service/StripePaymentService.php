@@ -1,38 +1,39 @@
 <?php
-
 namespace App\Service;
 
 use Stripe\Checkout\Session;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class StripePaymentService
 {
-    private UrlGeneratorInterface $urlGenerator;
+    private $stripeClient;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(StripeClient $stripeClient)
     {
-        $this->urlGenerator = $urlGenerator;
+        $this->stripeClient = $stripeClient;
     }
 
-    public function createCheckoutSession(int $totalAmount): Session
+    public function createCheckoutSession(float $totalAmount, string $successUrl, string $cancelUrl): Session
     {
-        return Session::create([
+        // Crée une session de paiement Stripe
+        $session = $this->stripeClient->checkout->sessions->create([
             'payment_method_types' => ['card'],
             'line_items' => [
                 [
                     'price_data' => [
                         'currency' => 'eur',
                         'product_data' => [
-                            'name' => 'Votre panier',
+                            'name' => 'Panier',
                         ],
-                        'unit_amount' => $totalAmount * 100, // Montant en centimes
+                        'unit_amount' => (int) ($totalAmount * 100), // Montant en centimes
                     ],
                     'quantity' => 1,
                 ],
             ],
             'mode' => 'payment',
-            'success_url' => $this->urlGenerator->generate('payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL),
-            'cancel_url' => $this->urlGenerator->generate('payment_cancel', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'success_url' => $successUrl,
+            'cancel_url' => $cancelUrl,
         ]);
+
+        return $session;
     }
 }

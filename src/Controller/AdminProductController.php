@@ -23,15 +23,32 @@ class AdminProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($file = $form->get('image')->getData()) {
+            // Mettre à jour la date de mise à jour
+            $newProduct->setUpdatedAt(new \DateTimeImmutable());
+
+            // Gestion de l'image
+            $file = $form->get('imageFile')->getData();
+            if ($file) {
+                // Vérification du type de fichier
+                $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!in_array($file->getMimeType(), $allowedMimeTypes)) {
+                    $this->addFlash('error', 'Le type de fichier n\'est pas autorisé.');
+                    return $this->redirectToRoute('admin_product_add');
+                }
+
                 $newFilename = uniqid() . '.' . $file->guessExtension();
                 $destination = $this->getParameter('kernel.project_dir') . '/assets/images';
+
+                // Créer le dossier s'il n'existe pas
+                if (!is_dir($destination)) {
+                    mkdir($destination, 0777, true);
+                }
 
                 try {
                     $file->move($destination, $newFilename);
                     $newProduct->setImage($newFilename);
                 } catch (FileException $e) {
-                    $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');
+                    $this->addFlash('error', 'Erreur lors de l\'upload de l\'image : ' . $e->getMessage());
                 }
             }
 
@@ -51,42 +68,62 @@ class AdminProductController extends AbstractController
     #[Route('/{id}/edit', name: 'admin_product_edit')]
     public function edit(Product $product, Request $request, EntityManagerInterface $entityManager): Response
     {
-        // Créez le formulaire d'édition lié à l'entité Product existante
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
-            // Si un fichier image est téléchargé, le gérer comme dans le formulaire d'ajout
-            $file = $form->get('image')->getData();
+            // Mettre à jour la date de mise à jour
+            $product->setUpdatedAt(new \DateTimeImmutable());
+
+            // Gestion de l'image
+            $file = $form->get('imageFile')->getData();
             if ($file) {
-                $newFilename = uniqid() . '.' . $file->guessExtension();
                 $destination = $this->getParameter('kernel.project_dir') . '/assets/images';
-    
+
+                // Supprimer l'ancienne image si nécessaire
+                $oldImage = $product->getImage();
+                if ($oldImage && file_exists($destination . '/' . $oldImage)) {
+                    unlink($destination . '/' . $oldImage);
+                }
+
+                // Vérification du type de fichier
+                $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!in_array($file->getMimeType(), $allowedMimeTypes)) {
+                    $this->addFlash('error', 'Le type de fichier n\'est pas autorisé.');
+                    return $this->redirectToRoute('admin_product_edit', ['id' => $product->getId()]);
+                }
+
+                $newFilename = uniqid() . '.' . $file->guessExtension();
                 try {
                     $file->move($destination, $newFilename);
-                    $product->setImage($newFilename);  // Modifiez l'image du produit existant
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');
+                    $product->setImage($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Erreur lors de l\'upload de l\'image : ' . $e->getMessage());
                 }
             }
-    
-            // Mettre à jour l'entité product
+
             $entityManager->flush();
             $this->addFlash('success', 'Produit modifié avec succès.');
-    
-            return $this->redirectToRoute('admin_backoffice');  // Redirige vers le backoffice après la modification
+
+            return $this->redirectToRoute('admin_backoffice');
         }
-    
-        // Rendu du formulaire d'édition
-        return $this->render('admin/product_edit.html.twig', [
+
+        return $this->render('admin/_product_edit.html.twig', [
             'form' => $form->createView(),
-            'product' => $product,  // Passez l'entité produit existante au template
+            'product' => $product,
+            'image' => $product->getImage(),
         ]);
     }
 
     #[Route('/{id}/delete', name: 'admin_product_delete')]
     public function delete(Product $product, EntityManagerInterface $entityManager): RedirectResponse
     {
+        // Suppression de l'image associée
+        $imagePath = $this->getParameter('kernel.project_dir') . '/assets/images/' . $product->getImage();
+        if ($product->getImage() && file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+
         $entityManager->remove($product);
         $entityManager->flush();
 

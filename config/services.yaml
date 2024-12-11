@@ -1,12 +1,9 @@
 services:
-    App\Service\StripePaymentService: ~
-
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true      # Injecte automatiquement les dépendances dans vos services.
+        autoconfigure: true # Enregistre automatiquement vos services comme commandes, abonnés d'événements, etc.
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
+    # Enregistre automatiquement les services dans le dossier src/
     App\:
         resource: '../src/'
         exclude:
@@ -17,3 +14,7 @@ services:
     App\Service\StripeClient:
         arguments:
             $stripeSecretKey: '%env(STRIPE_SECRET_KEY)%'
+
+    Symfony\Component\Mailer\MailerInterface: '@mailer'
+    Symfony\Component\Mailer\Transport\TransportInterface: '@mailer.transport'
+

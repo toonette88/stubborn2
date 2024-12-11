@@ -3,12 +3,13 @@ namespace App\Form;
 
 use App\Entity\Product;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichImageType;
+
 
 class ProductType extends AbstractType
 {
@@ -33,13 +34,11 @@ class ProductType extends AbstractType
                 ],
                 'label' => 'Prix',
             ])
-            ->add('image', FileType::class, [
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'label' => 'Image',
+            ->add('imageFile', VichImageType::class, [
+                'label' => 'Image du produit (JPG, PNG, GIF)',
                 'required' => false,
-                'mapped' => false,
+                'allow_delete' => true,
+                'download_uri' => true,
             ])
             ->add('is_featured', CheckboxType::class, [
                 'label' => 'Mise en avant',

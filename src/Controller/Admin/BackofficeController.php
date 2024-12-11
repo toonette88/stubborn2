@@ -9,32 +9,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\SecurityBundle\Attribute\IsGranted;
 
 #[Route('/admin')]
+#[IsGranted('ROLE_ADMIN')]
 class BackofficeController extends AbstractController
 {
     #[Route('/backoffice', name: 'admin_backoffice')]
     public function backoffice(EntityManagerInterface $entityManager, Request $request): Response
     {
-        // Création du formulaire pour ajouter un produit
         $newProduct = new Product();
         $addForm = $this->createForm(ProductType::class, $newProduct);
         $addForm->handleRequest($request);
 
         if ($addForm->isSubmitted() && $addForm->isValid()) {
-            $file = $addForm->get('image')->getData();
-            if ($file) {
-                $newFilename = uniqid() . '.' . $file->guessExtension();
-                $destination = $this->getParameter('kernel.project_dir') . '/assets/images';
-
-                try {
-                    $file->move($destination, $newFilename);
-                    $newProduct->setImage($newFilename);
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');
-                }
-            }
-
             $entityManager->persist($newProduct);
             $entityManager->flush();
 
@@ -46,14 +34,13 @@ class BackofficeController extends AbstractController
 
         $editForms = [];
         foreach ($products as $product) {
-            $form = $this->createForm(ProductType::class, $product);
-            $editForms[$product->getId()] = $form->createView();
+            $editForms[$product->getId()] = $this->createForm(ProductType::class, $product)->createView();
         }
-
+        
         return $this->render('admin/backoffice.html.twig', [
             'products' => $products,
+            'addForm' => $addForm->createView(),
             'edit_forms' => $editForms,
-            'addForm' => $addForm->createView(), 
         ]);
     }
 }

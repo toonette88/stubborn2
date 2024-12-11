@@ -1,16 +1,10 @@
 <form method="post" action="{{ path('admin_product_add')}}">   
    <div class="card mb-3 d-flex flex-column">
-        {{ form_start(form) }}
+        {{ form_start(addForm) }}
         <div class="row g-0">
             <!-- Image du produit -->
             <div class="col-md-3 p-2">
-                {% if form.image.vars.value is not empty %}
-                    <!-- Affiche l'image enregistrée si elle existe -->
-                    <img class="img-xsmall" src="{{ asset('images/' ~ form.image.vars.value) }}" class="card-img-top img-small" alt="{{ form.name.vars.value }}">
-                {% else %}
-                    <!-- Affiche le champ pour télécharger une image si l'image n'existe pas encore -->
-                    <p>{{ form_row(form.image) }}</p>
-                {% endif %}
+                <p>{{ form_row(addForm.imageFile) }}</p>          
             </div>
 
             <!-- Détails du produit -->
@@ -19,13 +13,13 @@
                     <table class="table table-borderless">
                         <tbody>
                             <tr>
-                                <td>{{ form_row(form.name) }}</td>
-                                <td>{{ form_row(form.price) }}</td>
-                                <td>{{ form_row(form.stockXS) }}</td>
-                                <td>{{ form_row(form.stockS) }}</td>
-                                <td>{{ form_row(form.stockM) }}</td>
-                                <td>{{ form_row(form.stockL) }}</td>
-                                <td>{{ form_row(form.stockXL) }}</td>
+                                <td>{{ form_row(addForm.name) }}</td>
+                                <td>{{ form_row(addForm.price) }}</td>
+                                <td>{{ form_row(addForm.stockXS) }}</td>
+                                <td>{{ form_row(addForm.stockS) }}</td>
+                                <td>{{ form_row(addForm.stockM) }}</td>
+                                <td>{{ form_row(addForm.stockL) }}</td>
+                                <td>{{ form_row(addForm.stockXL) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -35,6 +29,6 @@
                 </div>
             </div>
         </div>
-        {{ form_end(form) }}
+        {{ form_end(addForm) }}
     </div>
 </form>

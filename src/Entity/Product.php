@@ -5,8 +5,12 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[Vich\Uploadable]
 class Product
 {
     #[ORM\Id]
@@ -25,6 +29,12 @@ class Product
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
+    #[Vich\UploadableField(mapping: 'product_images', fileNameProperty: 'image')]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column]
     private ?bool $is_featured = null;
@@ -48,6 +58,8 @@ class Product
     {
         // Initialiser is_featured à true pour chaque nouveau produit
         $this->is_featured = true;
+        $this->updatedAt = new \DateTimeImmutable();
+
     }
 
     public function getId(): ?int
@@ -93,9 +105,34 @@ class Product
         return $this->image;
     }
 
-    public function setImage(string $image): static
+    public function setImage(?string $image): self
     {
         $this->image = $image;
+        return $this;
+    }
+
+    public function setImageFile(?File $imageFile = null): self
+    {
+        $this->imageFile = $imageFile;
+        if ($imageFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+        return $this;
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 
