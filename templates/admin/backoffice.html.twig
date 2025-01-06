@@ -22,7 +22,7 @@
 {% endif %}
 
 <h2>Ajouter un produit</h2>
-{{ include('admin/product_add.html.twig', {
+{{ include('admin/_product_add.html.twig', {
     form: addForm,  
     button_label: 'Ajouter'
 }) }}
@@ -31,7 +31,7 @@
 
 <h2>Liste des produits</h2>
 {% for product in products %}
-    {% include "admin/_product_edit.html.twig" with {product: product, form: edit_forms[product.id] } %}
+    {% include "admin/_product_edit.html.twig" with {product: product, form: product.editForm } %}
 {% endfor %}
 
 {% endblock %}

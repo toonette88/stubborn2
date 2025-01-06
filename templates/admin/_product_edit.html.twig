@@ -1,11 +1,11 @@
 <form method="post" action="{{ path('admin_product_edit', {id: product.id}) }}">
     <div class="card mb-3 d-flex flex-column">
-        {{ form_start(edit_forms[product.id]) }}
+        {{ form_start(product.editForm) }}
             <div class="row g-0">
                 <!-- Image du produit -->
                 <div class="col-md-3 p-2">
-                    <img class="img-xsmall" src="{{ asset('images/' ~ product.image) }}" alt="{{ product.name }}">
-                    <p>{{ form_row(edit_forms[product.id].is_featured) }}</p>
+                    <img class="img-xsmall" src="{{ vich_uploader_asset(product, 'imageFile') }}" alt="{{ product.name }}">
+                    <p>{{ form_row(product.editForm.is_featured) }}</p>
                 </div>
 
                 <!-- Détails du produit -->
@@ -14,23 +14,26 @@
                         <table class="table table-borderless">
                             <tbody>
                                 <tr>
-                                    <td>{{ form_row(edit_forms[product.id].name) }}</td>
-                                    <td>{{ form_row(edit_forms[product.id].price) }}</td>
-                                    <td>{{ form_row(edit_forms[product.id].stockXS) }}</td>
-                                    <td>{{ form_row(edit_forms[product.id].stockS) }}</td>
-                                    <td>{{ form_row(edit_forms[product.id].stockM) }}</td>
-                                    <td>{{ form_row(edit_forms[product.id].stockL) }}</td>
-                                    <td>{{ form_row(edit_forms[product.id].stockXL) }}</td>
+                                    <td>{{ form_row(product.editForm.name) }}</td>
+                                    <td>{{ form_row(product.editForm.price) }}</td>
+                                    <td>{{ form_row(product.editForm.stockXS) }}</td>
+                                    <td>{{ form_row(product.editForm.stockS) }}</td>
+                                    <td>{{ form_row(product.editForm.stockM) }}</td>
+                                    <td>{{ form_row(product.editForm.stockL) }}</td>
+                                    <td>{{ form_row(product.editForm.stockXL) }}</td>
                                 </tr>
                             </tbody>
                         </table>
+                        {{ form_end(product.editForm) }}
                         <div class="mt-auto d-flex justify-content-end">
-                            <a class="btn border border-black uniform-size m-2" href="{{path('admin_product_delete', {id: product.id})}}">SUPPRIMER</a>
-                            <button class="btn border border-black uniform-size m-2" type="submit">MODIFIER</button>                 
+                           <button class="btn border border-black uniform-size m-2" type="submit">MODIFIER</button>  
+                           <form method="post" action="{{ path('admin_product_delete', {id: product.id}) }}" style="display: inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_product_' ~ product.id) }}">
+                                <button type="submit" class="btn border border-black uniform-size m-2">SUPPRIMER</button>
+                            </form>               
                         </div>
                     </div>
                 </div>
-            </div>
-        {{ form_end(edit_forms[product.id]) }}
+            </div>        
     </div>
 </form>

@@ -5,11 +5,12 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Entity\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[Vich\Uploadable]
 class Product
 {
@@ -28,9 +29,9 @@ class Product
     private ?float $price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $image = null;
+    private ?string $imageName = null;
 
-    #[Vich\UploadableField(mapping: 'product_images', fileNameProperty: 'image')]
+    #[Vich\UploadableField(mapping: 'product_images', fileNameProperty: 'imageName')]
     private ?File $imageFile = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -100,24 +101,24 @@ class Product
         return $this;
     }
 
-    public function getImage(): ?string
+    #[ORM\PreUpdate]
+    public function preUpdate()
     {
-        return $this->image;
+            $this->updatedAt = new \DateTimeImmutable();
     }
-
-    public function setImage(?string $image): self
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        $this->image = $image;
-        return $this;
+        return $this->updatedAt;
     }
-
-    public function setImageFile(?File $imageFile = null): self
+    public function setImageFile(?File $imageFile = null): void
     {
         $this->imageFile = $imageFile;
-        if ($imageFile) {
+
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
             $this->updatedAt = new \DateTimeImmutable();
         }
-        return $this;
     }
 
     public function getImageFile(): ?File
@@ -125,15 +126,14 @@ class Product
         return $this->imageFile;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function setImageName(?string $imageName): void
     {
-        return $this->updatedAt;
+        $this->imageName = $imageName;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
+    public function getImageName(): ?string
     {
-        $this->updatedAt = $updatedAt;
-        return $this;
+        return $this->imageName;
     }
 
     public function isFeatured(): ?bool

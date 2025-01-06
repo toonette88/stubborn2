@@ -39,6 +39,7 @@ class ProductType extends AbstractType
                 'required' => false,
                 'allow_delete' => true,
                 'download_uri' => true,
+                'image_uri' => true,
             ])
             ->add('is_featured', CheckboxType::class, [
                 'label' => 'Mise en avant',
