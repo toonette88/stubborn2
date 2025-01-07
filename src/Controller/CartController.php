@@ -5,31 +5,24 @@ namespace App\Controller;
 use App\Entity\Cart;
 use App\Entity\CartItem;
 use App\Entity\Product;
-use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/cart')]
 class CartController extends AbstractController
 {
-    private $productRepository;
-
-    public function __construct(ProductRepository $productRepository)
-    {
-        $this->productRepository = $productRepository;
-    }
-
     #[Route('/', name: 'app_cart')]
-    public function index(EntityManagerInterface $entityManager, UserInterface $user): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
+
         $cart = $entityManager->getRepository(Cart::class)->findOneBy(['user' => $user]);
 
         if (!$cart) {
@@ -39,10 +32,11 @@ class CartController extends AbstractController
             $entityManager->flush();
         }
 
-        $total = 0;
-        foreach ($cart->getItems() as $item) {
-            $total += $item->getProduct()->getPrice() * $item->getQuantity();
-        }
+        $total = array_reduce(
+            $cart->getItems()->toArray(),
+            fn($sum, CartItem $item) => $sum + $item->getProduct()->getPrice() * $item->getQuantity(),
+            0
+        );
 
         return $this->render('cart/index.html.twig', [
             'cart' => $cart,
@@ -53,15 +47,32 @@ class CartController extends AbstractController
     #[Route('/add/{id}', name: 'app_cart_add')]
     public function add(Product $product, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $cart = $this->getUser()->getCart();
-        if (!$cart) {
-            $cart = new Cart();
-            $cart->setUser($this->getUser());
-            $entityManager->persist($cart);
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
         }
 
+        $cart = $entityManager->getRepository(Cart::class)->findOneBy(['user' => $user]) ?? new Cart();
+        $cart->setUser($user);
+
         $size = $request->request->get('size');
-        $quantity = $request->request->get('quantity', 1);
+        $quantity = (int) $request->request->get('quantity', 1);
+
+        // Validation de la taille et du stock
+        $stockField = 'stock' . strtoupper($size);
+        if (!method_exists($product, 'get' . ucfirst($stockField))) {
+            $this->addFlash('error', 'Taille non valide.');
+            return $this->redirectToRoute('app_product_detail', ['id' => $product->getId()]);
+        }
+
+        $availableStock = $product->{'get' . ucfirst($stockField)}();
+        if ($quantity > $availableStock) {
+            $this->addFlash('error', 'Stock insuffisant pour la taille sélectionnée.');
+            return $this->redirectToRoute('app_product_detail', ['id' => $product->getId()]);
+        }
+
+        // Mise à jour du stock
+        $product->{'set' . ucfirst($stockField)}($availableStock - $quantity);
 
         $cartItem = $entityManager->getRepository(CartItem::class)->findOneBy([
             'cart' => $cart,
@@ -73,48 +84,38 @@ class CartController extends AbstractController
             $cartItem->setQuantity($cartItem->getQuantity() + $quantity);
         } else {
             $cartItem = new CartItem();
-            $cartItem->setCart($cart);
-            $cartItem->setProduct($product);
-            $cartItem->setSize($size);
-            $cartItem->setQuantity($quantity);
+            $cartItem->setCart($cart)
+                ->setProduct($product)
+                ->setQuantity($quantity)
+                ->setSize($size);
             $entityManager->persist($cartItem);
         }
 
+        $entityManager->persist($cart);
         $entityManager->flush();
 
+        $this->addFlash('success', 'Produit ajouté au panier.');
         return $this->redirectToRoute('app_cart');
     }
 
-    #[Route('/cart/remove/{productId}', name: 'cart_remove')]
-public function removeProduct(int $productId, EntityManagerInterface $entityManager): RedirectResponse
-{
-    // Vérifiez que l'utilisateur est connecté
-    $user = $this->getUser();
-    if (!$user) {
-        return $this->redirectToRoute('app_login');
-    }
-
-    // Récupérer le panier de l'utilisateur
-    $cart = $user->getCart();
-
-    if ($cart) {
-        // Trouver le CartItem associé au produit dans le panier
-        $cartItem = null;
-        foreach ($cart->getItems() as $item) {
-            if ($item->getProduct()->getId() === $productId) {
-                $cartItem = $item;
-                break;
-            }
+    #[Route('/remove/{id}', name: 'app_cart_remove')]
+    public function remove(int $id, EntityManagerInterface $entityManager): RedirectResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
         }
 
-        // Si le CartItem est trouvé, le supprimer
-        if ($cartItem) {
-            $cart->removeItem($cartItem); // Appel de removeItem pour supprimer l'article
-            $entityManager->flush(); // Sauvegarder les modifications dans la base de données
-        }
-    }
+        $cartItem = $entityManager->getRepository(CartItem::class)->find($id);
 
-    // Rediriger vers la page du panier
-    return new RedirectResponse($this->generateUrl('app_cart'));
-}
+        if ($cartItem && $cartItem->getCart()->getUser() === $user) {
+            $entityManager->remove($cartItem);
+            $entityManager->flush();
+            $this->addFlash('success', 'Produit retiré du panier.');
+        } else {
+            $this->addFlash('error', 'Produit non trouvé dans votre panier.');
+        }
+
+        return $this->redirectToRoute('app_cart');
+    }
 }

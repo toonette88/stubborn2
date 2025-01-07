@@ -12,8 +12,8 @@ class CartItemTest extends TestCase
     public function testCartItemProperties()
     {
         // Création de mocks ou d'objets réels pour Cart et Product
-        $cart = new Cart(); // Assure-toi d'implémenter Cart correctement
-        $product = new Product(); // Assure-toi d'implémenter Product correctement
+        $cart = new Cart(); 
+        $product = new Product();
 
         // Créer une instance de CartItem
         $cartItem = new CartItem();
@@ -29,7 +29,7 @@ class CartItemTest extends TestCase
         $this->assertNull($cartItem->getCart());
         $this->assertNull($cartItem->getProduct());
         $this->assertEquals(1,$cartItem->getQuantity());
-        $this->assertEquals('L', $cartItem->getSize());  // Assert 'L' instead of null
+        $this->assertEquals('L', $cartItem->getSize());  
 
         // Tester la méthode setCart()
         $cartItem->setCart($cart);
@@ -41,7 +41,7 @@ class CartItemTest extends TestCase
 
         // Tester la méthode setQuantity()
         $cartItem->setQuantity(2);
-        $this->assertIsInt($cartItem->getQuantity()); // Vérifier que c'est un entier
+        $this->assertIsInt($cartItem->getQuantity()); 
         $this->assertEquals(2, $cartItem->getQuantity());
 
         // Tester la méthode setSize()

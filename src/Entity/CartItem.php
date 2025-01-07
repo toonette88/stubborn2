@@ -17,13 +17,16 @@ class CartItem
     private ?Cart $cart = null;
 
     #[ORM\ManyToOne(targetEntity: Product::class, cascade: ['persist'])]
-    private ?Product $product = null;    
+    private ?Product $product = null;   
 
     #[ORM\Column]
     private ?int $quantity;
 
     #[ORM\Column(length: 5)]
     private ?string $size;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $imagePath = null;
 
     public function getId(): ?int
     {
@@ -71,6 +74,17 @@ class CartItem
     public function setSize(string $size): self
     {
         $this->size = $size;
+        return $this;
+    }
+
+    public function getImagePath(): ?string
+    {
+        return $this->imagePath;
+    }
+
+    public function setImagePath(?string $imagePath): self
+    {
+        $this->imagePath = $imagePath;
         return $this;
     }
 }
