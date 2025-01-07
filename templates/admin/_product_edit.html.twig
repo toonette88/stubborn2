@@ -1,39 +1,38 @@
 <form method="post" action="{{ path('admin_product_edit', {id: product.id}) }}">
-    <div class="card mb-3 d-flex flex-column">
-        {{ form_start(product.editForm) }}
-            <div class="row g-0">
-                <!-- Image du produit -->
-                <div class="col-md-3 p-2">
-                    <img class="img-xsmall" src="{{ vich_uploader_asset(product, 'imageFile') }}" alt="{{ product.name }}">
-                    <p>{{ form_row(product.editForm.is_featured) }}</p>
-                </div>
+<div class="card mb-3 d-flex flex-column">
+    {{ form_start(product.editForm) }}
+        <div class="row g-0">
+            <!-- Image du produit -->
+            <div class="col-md-3 p-2">
+                <img class="img-xsmall" src="{{ vich_uploader_asset(product, 'imageFile') }}" alt="{{ product.name }}">
+                <p>{{ form_row(product.editForm.is_featured) }}</p>
+            </div>
 
-                <!-- Détails du produit -->
-                <div class="col-md-8">
-                    <div class="card-body d-flex flex-column">
-                        <table class="table table-borderless">
-                            <tbody>
-                                <tr>
-                                    <td>{{ form_row(product.editForm.name) }}</td>
-                                    <td>{{ form_row(product.editForm.price) }}</td>
-                                    <td>{{ form_row(product.editForm.stockXS) }}</td>
-                                    <td>{{ form_row(product.editForm.stockS) }}</td>
-                                    <td>{{ form_row(product.editForm.stockM) }}</td>
-                                    <td>{{ form_row(product.editForm.stockL) }}</td>
-                                    <td>{{ form_row(product.editForm.stockXL) }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        {{ form_end(product.editForm) }}
-                        <div class="mt-auto d-flex justify-content-end">
-                           <button class="btn border border-black uniform-size m-2" type="submit">MODIFIER</button>  
-                           <form method="post" action="{{ path('admin_product_delete', {id: product.id}) }}" style="display: inline;">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete_product_' ~ product.id) }}">
-                                <button type="submit" class="btn border border-black uniform-size m-2">SUPPRIMER</button>
-                            </form>               
-                        </div>
+            <!-- Détails du produit -->
+            <div class="col-md-8">
+                <div class="card-body d-flex flex-column">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td>{{ form_row(product.editForm.name) }}</td>
+                                <td>{{ form_row(product.editForm.price) }}</td>
+                                <td>{{ form_row(product.editForm.stockXS) }}</td>
+                                <td>{{ form_row(product.editForm.stockS) }}</td>
+                                <td>{{ form_row(product.editForm.stockM) }}</td>
+                                <td>{{ form_row(product.editForm.stockL) }}</td>
+                                <td>{{ form_row(product.editForm.stockXL) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {{ form_end(product.editForm) }}
+                    <div class="mt-auto d-flex justify-content-end">
+                        <button class="btn border border-black uniform-size m-2" type="submit">MODIFIER</button>  
+                        <form method="post" action="{{ path('admin_product_delete', {id: product.id}) }}" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_product_' ~ product.id) }}">
+                            <button type="submit" class="btn border border-black uniform-size m-2">SUPPRIMER</button>
+                        </form>               
                     </div>
                 </div>
-            </div>        
-    </div>
-</form>
+            </div>
+        </div>        
+</div>

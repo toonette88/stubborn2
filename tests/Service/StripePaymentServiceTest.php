@@ -2,41 +2,51 @@
 
 namespace App\Tests\Service;
 
+use App\Service\StripeClient;
 use App\Service\StripePaymentService;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Stripe\StripeClient;
 use Stripe\Checkout\Session;
 
 class StripePaymentServiceTest extends TestCase
 {
-    public function testCreateCheckoutSession(): void
+    public function testMakePayment(): void
     {
-        // Créer un mock de StripeClient
-        $stripeClientMock = $this->createMock(StripeClient::class);
+        // Mock items for payment
+        $items = [
+            [
+                'name' => 'Test Item',
+                'price' => 5000,
+                'quantity' => 1,
+                'currency' => 'eur',
+            ],
+        ];
+        $successUrl = 'https://example.com/success';
+        $cancelUrl = 'https://example.com/cancel';
 
-        // Créer un mock pour la réponse de la session Stripe
-        $sessionMock = $this->createMock(Session::class);
-        $sessionMock->id = 'fake_session_id';
+        // Mock Session
+        $mockSession = $this->createMock(Session::class);
+        $mockSession->id = 'test_session_id';
+        $mockSession->url = 'https://example.com/checkout';
 
-        // Simuler le comportement de la méthode checkout->sessions->create()
-        $stripeClientMock->method('__call')
-            ->with('checkout.sessions.create', $this->anything())
-            ->willReturn($sessionMock);
+        // Create mock for StripeClient
+        $stripeClient = $this->createMock(StripeClient::class);
+        $stripeClient->method('createCheckoutSession')
+            ->willReturn($mockSession);
 
-        // Créer un mock de UrlGeneratorInterface
-        $urlGeneratorMock = $this->createMock(UrlGeneratorInterface::class);
-        $urlGeneratorMock->method('generate')
-            ->willReturn('http://example.com/success');
+        // Inject the API key directly in the test
+        $stripeApiKey = 'sk_test_12345';
 
-        // Créer une instance de StripePaymentService avec le mock de StripeClient
-        $stripeService = new StripePaymentService($stripeClientMock, $urlGeneratorMock);
+        // Manually inject the mock StripeClient into StripePaymentService
+        $stripeService = new StripePaymentService($stripeApiKey);
+        $stripeService->setStripeClient($stripeClient);
 
-        // Appeler la méthode à tester
-        $session = $stripeService->createCheckoutSession(1000, 'http://example.com/success', 'http://example.com/cancel');
+        // Call the method to test payment
+        $result = $stripeService->makePayment($items, $successUrl, $cancelUrl);
 
-        // Vérifier que le résultat est une instance de Session
-        $this->assertInstanceOf(Session::class, $session);
-        $this->assertEquals('fake_session_id', $session->id);
+        // Assertions
+        $this->assertArrayHasKey('id', $result);
+        $this->assertArrayHasKey('url', $result);
+        $this->assertEquals('test_session_id', $result['id']);
+        $this->assertEquals('https://example.com/checkout', $result['url']);
     }
 }
