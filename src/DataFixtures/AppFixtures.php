@@ -71,8 +71,6 @@ class AppFixtures extends Fixture
             $product->setStockL(mt_rand(10,50));
             $product->setStockXl(mt_rand(10,50));
 
-            $this->addReference('product_'.$key, $product);
-
             $manager->persist($product);
         }
 

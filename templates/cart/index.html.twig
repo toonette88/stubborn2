@@ -14,11 +14,7 @@
                 <div class="row g-0">
                     <!-- Image du produit -->
                     <div class="col-md-4 p-2">
-                        {% if item.product.imageName %}
-                            <img src="{{ asset('uploads/images/' ~ item.product.imageName) }}" alt="{{ item.product.name }}">
-                        {% else %}
-                            <img src="/images/default-product.jpg" class="card-img-top" alt="Image par défaut">
-                        {% endif %}
+                         <img src="{{ vich_uploader_asset(item.product, 'imageFile') }}" class="card-img-top" alt="{{ item.product.description }}">
                     </div>
 
                     <!-- Détails du produit -->

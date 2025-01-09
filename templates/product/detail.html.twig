@@ -9,7 +9,7 @@
 <div class="container d-flex justify-content-center my-5">
     <div class="border border-black">
         <div class="col d-flex">
-            <img src="{{ vich_uploader_asset(product, 'imageFile') }}" class="card-img-top" alt="{{ product.name }}">
+            <img src="{{ vich_uploader_asset(product, 'imageFile') }}" class="card-img-top" alt="{{ product.description }}">
         </div>
         <div class="row container d-flex p-4">
             <form action="{{ path('app_cart_add', { id: product.id }) }}" method="POST" class="d-flex flex-column">

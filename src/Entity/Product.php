@@ -6,6 +6,7 @@ use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Ignore;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
@@ -31,6 +32,7 @@ class Product
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageName = null;
 
+   
     #[Vich\UploadableField(mapping: 'product_images', fileNameProperty: 'imageName')]
     private ?File $imageFile = null;
 
@@ -201,4 +203,22 @@ class Product
         $this->stockXL = $stockXL;
         return $this;
     }
+
+    public function isValidSize(string $size): bool
+    {
+    $method = 'getStock' . strtoupper($size);
+    return method_exists($this, $method);
+    }
+
+    public function reduceStock(string $size, int $quantity): void
+{
+    $stockField = 'stock' . strtoupper($size);
+    $currentStock = $this->{'get' . ucfirst($stockField)}();
+
+    if ($quantity > $currentStock) {
+        throw new \LogicException('Stock insuffisant.');
+    }
+
+    $this->{'set' . ucfirst($stockField)}($currentStock - $quantity);
+}
 }

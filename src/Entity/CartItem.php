@@ -25,9 +25,6 @@ class CartItem
     #[ORM\Column(length: 5)]
     private ?string $size;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $imagePath = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -74,17 +71,6 @@ class CartItem
     public function setSize(string $size): self
     {
         $this->size = $size;
-        return $this;
-    }
-
-    public function getImagePath(): ?string
-    {
-        return $this->imagePath;
-    }
-
-    public function setImagePath(?string $imagePath): self
-    {
-        $this->imagePath = $imagePath;
         return $this;
     }
 }
