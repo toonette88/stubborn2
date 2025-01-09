@@ -16,7 +16,7 @@ class CartItem
     #[ORM\ManyToOne(inversedBy: 'items', targetEntity: Cart::class)]
     private ?Cart $cart = null;
 
-    #[ORM\ManyToOne(targetEntity: Product::class, cascade: ['persist'])]
+    #[ORM\ManyToOne(targetEntity: Product::class)]
     private ?Product $product = null;   
 
     #[ORM\Column]

@@ -77,5 +77,5 @@ class Cart
             $total += $item->getProduct()->getPrice() * $item->getQuantity();
         }
         return $total;
-    }
+}
 }
