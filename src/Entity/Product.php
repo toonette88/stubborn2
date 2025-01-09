@@ -120,7 +120,7 @@ class Product
             $this->updatedAt = new \DateTimeImmutable();
         }
     }
-    
+
     public function getImageFile(): ?File
     {
         return $this->imageFile;

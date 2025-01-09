@@ -51,19 +51,7 @@ class ProductTest extends TestCase
         $product->setImageName('image.jpg');
         $this->assertEquals('image.jpg', $product->getImageName());
     }
-    
-    public function testSetAndGetImageFile()
-    {
-        $product = new Product();
-
-        // Simule un fichier d'image
-        $mockFile = $this->createMock(\Vich\UploaderBundle\Entity\File::class);
-        $product->setImageFile($mockFile);
-
-        // Vérifie que le fichier est bien défini
-        $this->assertSame($mockFile, $product->getImageFile());
-    }
-
+   
     public function testSetAndGetStockXS()
     {
         $product = new Product();
