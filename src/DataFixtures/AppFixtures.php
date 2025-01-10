@@ -25,7 +25,7 @@ class AppFixtures extends Fixture
             $user = new User();
             $user->setName('user'.$i);
             $user->setEmail('user'.$i.'@example.fr');
-            $user->setAdress(mt_rand(0,100).' rue de Paris'.mt_rand(10000,29999).' Versailles');
+            $user->setAddress(mt_rand(0,100).' rue de Paris 78646 Versailles');
             $user->setRoles(['ROLE_USER']);
 
             $password = $this->hasher->hashPassword($user, 'pass_1234');
@@ -37,7 +37,7 @@ class AppFixtures extends Fixture
         $user = new User();
         $user->setName('admin');
         $user->setEmail('admin@example.fr');
-        $user->setAdress(mt_rand(0,100).' rue de Paris'.mt_rand(10000,29999).' Versailles');
+        $user->setAddress(mt_rand(0,100).' rue de Paris 78646 Versailles');
         $user->setRoles(['USER_ADMIN']);
 
         $password = $this->hasher->hashPassword($user, 'pass_1234');
@@ -63,7 +63,7 @@ class AppFixtures extends Fixture
             $product->setName($data[0]);
             $product->setDescription($data[1]);
             $product->setPrice($data[2]);
-            $product->setImageName($data[3]);  // Nom de l'image
+            $product->setImageName($data[3]);
             $product->setIsFeatured($data[4]);
             $product->setStockXs(mt_rand(10,50));
             $product->setStockS(mt_rand(10,50));

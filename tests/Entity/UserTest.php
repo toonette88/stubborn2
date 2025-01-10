@@ -31,17 +31,17 @@ class UserTest extends TestCase
         $this->assertEquals('secret', $user->getPassword());
     }
 
-    public function testSetAndGetAdress(): void
+    public function testSetAndGetAddress(): void
     {
         $user = new User();
     
         // Définir une adresse en tant que chaîne de caractères
-        $user->setAdress('123 Main Street');
-        $this->assertSame('123 Main Street', $user->getAdress());
+        $user->setAddress('123 Main Street');
+        $this->assertSame('123 Main Street', $user->getAddress());
     
         // Tester une adresse null
-        $user->setAdress(null);
-        $this->assertNull($user->getAdress());
+        $user->setAddress(null);
+        $this->assertNull($user->getAddress());
     }
 
     public function testSetAndGetRoles()

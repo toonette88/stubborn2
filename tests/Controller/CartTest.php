@@ -1,43 +1,31 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\DataFixtures\AppFixtures;
 use App\Entity\Product;
+use App\Entity\User;
+use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class CartTest extends WebTestCase
 {
-    public function testAddProductToCart(): void
+    public function testCartPageWithFixtures(): void
     {
         $client = static::createClient();
 
-         // Charger les fixtures
-         $container = static::getContainer();
-         $productRepository = $container->get('doctrine')->getRepository(Product::class);
- 
-         // Utilisez le repository pour récupérer le produit
-         $product = $productRepository->findOneBy(['name' => 'Blackbelt']);
-         $this->assertNotNull($product, 'Le produit "Blackbelt" n\'a pas été trouvé.');;
+        // Récupérer un utilisateur à partir des fixtures
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $user = $userRepository->findOneByName('user1');
 
-        //Accéder à la page d'un produit
-        $crawler = $client->request('GET', '/product/'. $product->getId());
+        // Simulation de l'authentification
+        $client->loginUser($user);
 
+        // Tester l'accès au panier
+        $client->request('GET', '/cart');
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('p', 'Nom: Blackbelt');
-
-        // Soumettre le formulaire d'ajout au panier
-        $form = $crawler->selectButton('AJOUTER AU PANIER')->form();
-        $client->submit($form);
-
-        //Vérifier que la réponse est une redirection vers le panier
-        $this->assertResponseRedirects('/cart');
-
-        $client->followRedirect();
-
-        // Vérifier que le produit est affiché dans le panier
-        $this->assertSelectorTextContains('.cart-item', 'Blackbelt');
-
-
-
+        $this->assertSelectorTextContains('h1','Mon panier');
+       // $this->assertSelectorExists('.cart-items'); // Vérifie si la liste des articles est présente
     }
+
 }

@@ -29,9 +29,8 @@ class Product
     #[ORM\Column]
     private ?float $price = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $imageName = null;
-
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $imageName;
    
     #[Vich\UploadableField(mapping: 'product_images', fileNameProperty: 'imageName')]
     #[Ignore]
