@@ -10,6 +10,7 @@ class StripePaymentService
 
     public function __construct(string $stripeSecretKey)
     {
+        // Initialiser le client Stripe
         $this->stripeClient = new StripeClient($stripeSecretKey);
     }
 
@@ -19,17 +20,25 @@ class StripePaymentService
      * @param array $items Un tableau d'articles pour le paiement
      * @param string $successUrl URL de redirection après un paiement réussi
      * @param string $cancelUrl URL de redirection après une annulation
-     * @return array Données pertinentes de la session de paiement
+     * @return array Données pertinentes de la session Stripe
+     * @throws \RuntimeException Si une erreur se produit
      */
-    public function makePayment(array $items, string $successUrl, string $cancelUrl): array
+    public function createCheckoutSession(array $items, string $successUrl, string $cancelUrl): array
     {
-        // Formattez les articles pour Stripe
+        if (empty($items)) {
+            throw new \LogicException('La liste des articles ne peut pas être vide.');
+        }
+
         $lineItems = array_map(function ($item) {
+            if (!isset($item['name'], $item['price'], $item['quantity'], $item['currency'])) {
+                throw new \LogicException('Chaque article doit inclure "name", "price", "quantity" et "currency".');
+            }
+
             return [
                 'price_data' => [
-                    'currency' => $item['currency'], // e.g., 'usd' or 'eur'
+                    'currency' => $item['currency'],
                     'product_data' => [
-                        'name' => $item['name'], // Nom du produit
+                        'name' => $item['name'],
                     ],
                     'unit_amount' => $item['price'] * 100, // Prix en centimes
                 ],
@@ -37,25 +46,21 @@ class StripePaymentService
             ];
         }, $items);
 
-        // Créez une session de paiement Stripe
-        $session = $this->stripeClient->checkout->sessions->create([
-            'payment_method_types' => ['card'], // Méthodes de paiement acceptées
-            'line_items' => $lineItems, // Articles à facturer
-            'mode' => 'payment', // Mode de paiement unique
-            'success_url' => $successUrl, // URL de succès
-            'cancel_url' => $cancelUrl, // URL d'annulation
-        ]);
+        try {
+            $session = $this->stripeClient->checkout->sessions->create([
+                'payment_method_types' => ['card'],
+                'line_items' => $lineItems,
+                'mode' => 'payment',
+                'success_url' => $successUrl,
+                'cancel_url' => $cancelUrl,
+            ]);
 
-        // Retourne les données pertinentes de la session
-        return [
-            'id' => $session->id,
-            'url' => $session->url,
-        ];
-    }
-
-    public function setStripeClient(StripeClient $stripeClient): void
-    {
-        $this->stripeClient = $stripeClient;
+            return [
+                'id' => $session->id,
+                'url' => $session->url,
+            ];
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Erreur lors de la création de la session Stripe : ' . $e->getMessage());
+        }
     }
 }
-

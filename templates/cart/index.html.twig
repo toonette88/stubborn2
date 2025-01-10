@@ -6,10 +6,10 @@
 <div class="container my-5">
     <h1>Mon Panier</h1>
 
-    {% if cart.items|length == 0 %}
+    {% if items|length == 0 %}
         <p>Votre panier est vide.</p>
     {% else %}
-        {% for item in cart.items %}
+        {% for item in items %}
             <div class="card mb-3 d-flex flex-column">
                 <div class="row g-0">
                     <!-- Image du produit -->

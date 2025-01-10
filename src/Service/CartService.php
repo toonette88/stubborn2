@@ -33,14 +33,20 @@ class CartService
 
         return $cart;
     }
-    public function calculateTotal(): float
+    public function calculateTotal(Cart $cart): float
     {
         $total = 0;
-        foreach ($this->items as $item) {
-            $total += $item->getProduct()->getPrice() * $item->getQuantity();
+    
+        foreach ($cart->getItems() as $item) {
+            $product = $item->getProduct();
+            if ($product) {
+                $total += $product->getPrice() * $item->getQuantity();
+            }
         }
+    
         return $total;
     }
+   
 
     public function addProductToCart(User $user, Product $product, string $size, int $quantity): void
     {

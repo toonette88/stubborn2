@@ -11,9 +11,7 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\Service\StripeClient:
-        arguments:
-            $stripeSecretKey: '%env(STRIPE_SECRET_KEY)%'
+    
     App\Service\StripePaymentService:
         arguments:
             $stripeSecretKey: '%env(STRIPE_SECRET_KEY)%'

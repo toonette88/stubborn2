@@ -34,6 +34,7 @@ class Product
 
    
     #[Vich\UploadableField(mapping: 'product_images', fileNameProperty: 'imageName')]
+    #[Ignore]
     private ?File $imageFile = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -211,14 +212,24 @@ class Product
     }
 
     public function reduceStock(string $size, int $quantity): void
-{
-    $stockField = 'stock' . strtoupper($size);
-    $currentStock = $this->{'get' . ucfirst($stockField)}();
+    {
+        $stockField = 'stock' . strtoupper($size);
+        $currentStock = $this->{'get' . ucfirst($stockField)}();
 
-    if ($quantity > $currentStock) {
-        throw new \LogicException('Stock insuffisant.');
+        if ($quantity > $currentStock) {
+            throw new \LogicException('Stock insuffisant.');
+        }
+
+        $this->{'set' . ucfirst($stockField)}($currentStock - $quantity);
     }
 
-    $this->{'set' . ucfirst($stockField)}($currentStock - $quantity);
-}
+    public function __serialize(): array
+    { 
+        return [$this->id]; 
+    } 
+
+    public function __unserialize(array $data): void 
+    { 
+        [$this->id] = $data;
+    }
 }
