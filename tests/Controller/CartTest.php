@@ -2,11 +2,11 @@
 
 namespace App\Tests\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\DataFixtures\AppFixtures;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class CartTest extends WebTestCase
 {
@@ -27,5 +27,4 @@ class CartTest extends WebTestCase
         $this->assertSelectorTextContains('h1','Mon panier');
        // $this->assertSelectorExists('.cart-items'); // Vérifie si la liste des articles est présente
     }
-
 }
