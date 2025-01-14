@@ -15,7 +15,7 @@ class CartController extends AbstractController
 {
     public function __construct(private CartService $cartService) {}
 
-    #[Route('/', name: 'app_cart')]
+    #[Route('', name: 'app_cart')]
     public function index(): Response
     {
         $user = $this->getUser();
@@ -35,7 +35,7 @@ class CartController extends AbstractController
         ]);
     }
 
-    #[Route('/add/{id}', name: 'app_cart_add')]
+    #[Route('/add/{id}', name: 'app_cart_add', methods: ['POST'])]
     public function add(Product $product, Request $request): Response
     {
         $user = $this->getUser();
