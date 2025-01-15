@@ -3,6 +3,7 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
+    <h1> Produits phares </h1>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for product in products %}
             {% if product.isFeatured %}

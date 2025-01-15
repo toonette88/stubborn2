@@ -81,10 +81,13 @@ class PaymentController extends AbstractController
          return $this->render('payment/success.html.twig');
      }
  
-     // Route appelée en cas de paiement annulé
-     #[Route('/payment/cancel', name: 'payment_cancel')]
-     public function paymentCancel(): Response
-     {
-         return $this->render('payment/cancel.html.twig');
-     }
+    // Route appelée en cas de paiement annulé
+    #[Route('/payment/cancel', name: 'payment_cancel')]
+    public function paymentCancel(): Response
+    {
+        // Message d'annulation
+        return $this->render('payment/cancel.html.twig', [
+            'message' => 'Votre paiement a été annulé. Vous pouvez réessayer.',
+        ]);
+    }
 }

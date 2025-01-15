@@ -9,45 +9,46 @@
     {% if items|length == 0 %}
         <p>Votre panier est vide.</p>
     {% else %}
-        {% for item in items %}
-            <div class="card mb-3 d-flex flex-column">
-                <div class="row g-0">
-                    <!-- Image du produit -->
-                    <div class="col-md-4 p-2">
-                         <img src="{{ vich_uploader_asset(item.product, 'imageFile') }}" class="card-img-top" alt="{{ item.product.description }}">
-                    </div>
+        <div class="cart-items">
+            {% for item in items %}
+                <div class="card mb-3 d-flex flex-column">
+                    <div class="row g-0">
+                        <!-- Image du produit -->
+                        <div class="col-md-4 p-2">
+                            <img src="{{ vich_uploader_asset(item.product, 'imageFile') }}" class="card-img-top" alt="{{ item.product.description }}">
+                        </div>
 
-                    <!-- Détails du produit -->
-                    <div class="col-md-8">
-                        <div class="card-body d-flex flex-column">
-                            <table class="table table-borderless">
-                                <thead>
-                                    <tr>
-                                        <th>Nom</th>
-                                        <th>Prix</th>
-                                        <th>Taille</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>{{ item.product.name }}</td>
-                                        <td>{{ item.product.price }} €</td>
-                                        <td>{{ item.size }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <!-- Bouton Retirer du panier aligné en bas de la carte -->
-                            <div class="mt-auto d-flex justify-content-end">
-                                <a href="{{ path('app_cart_remove', { 'id': item.id }) }}" class="btn btn-outline-danger uniform-size">
-                                    Retirer du panier
-                                </a>
+                        <!-- Détails du produit -->
+                        <div class="col-md-8">
+                            <div class="card-body d-flex flex-column">
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th>Nom</th>
+                                            <th>Prix</th>
+                                            <th>Taille</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ item.product.name }}</td>
+                                            <td>{{ item.product.price }} €</td>
+                                            <td>{{ item.size }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!-- Bouton Retirer du panier aligné en bas de la carte -->
+                                <div class="mt-auto d-flex justify-content-end">
+                                    <a href="{{ path('app_cart_remove', { 'id': item.id }) }}" class="btn btn-outline-danger uniform-size">
+                                        Retirer du panier
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
-
+            {% endfor %}
+        </div>
         <!-- Section Total et Boutons -->
         <div class="card border-0 mb-3">
             <div class="row g-0">
@@ -58,7 +59,7 @@
                             <div class="border border-dark me-2 px-3 py-2">TOTAL : {{ total }} €</div>
                             <!-- Bouton Finaliser la commande -->
                             <form action="{{ path('app_payment') }}" method="POST" data-turbo="false">
-                                <button type="submit" class="btn btn-danger uniform-size">Finaliser ma commande</button>
+                                <button type="submit" class="btn btn-danger uniform-size" id="purchase">Finaliser ma commande</button>
                             </form>
                         </div>
                         <!-- Bouton Continuer mes achats -->
