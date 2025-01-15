@@ -5,8 +5,14 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Ignore;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[Vich\Uploadable]
 class Product
 {
     #[ORM\Id]
@@ -23,8 +29,15 @@ class Product
     #[ORM\Column]
     private ?float $price = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $image = null;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $imageName;
+   
+    #[Vich\UploadableField(mapping: 'product_images', fileNameProperty: 'imageName')]
+    #[Ignore]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column]
     private ?bool $is_featured = null;
@@ -48,6 +61,8 @@ class Product
     {
         // Initialiser is_featured à true pour chaque nouveau produit
         $this->is_featured = true;
+        $this->updatedAt = new \DateTimeImmutable();
+
     }
 
     public function getId(): ?int
@@ -88,15 +103,39 @@ class Product
         return $this;
     }
 
-    public function getImage(): ?string
+    #[ORM\PreUpdate]
+    public function preUpdate()
     {
-        return $this->image;
+            $this->updatedAt = new \DateTimeImmutable();
+    }
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
 
-    public function setImage(string $image): static
+    public function getImageFile(): ?File
     {
-        $this->image = $image;
-        return $this;
+        return $this->imageFile;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
     }
 
     public function isFeatured(): ?bool
@@ -104,7 +143,7 @@ class Product
         return $this->is_featured;
     }
 
-    public function setFeatured(bool $isFeatured): static
+    public function setIsFeatured(bool $isFeatured): static
     {
         $this->is_featured = $isFeatured;
         return $this;
@@ -163,5 +202,33 @@ class Product
     {
         $this->stockXL = $stockXL;
         return $this;
+    }
+
+    public function isValidSize(string $size): bool
+    {
+    $method = 'getStock' . strtoupper($size);
+    return method_exists($this, $method);
+    }
+
+    public function reduceStock(string $size, int $quantity): void
+    {
+        $stockField = 'stock' . strtoupper($size);
+        $currentStock = $this->{'get' . ucfirst($stockField)}();
+
+        if ($quantity > $currentStock) {
+            throw new \LogicException('Stock insuffisant.');
+        }
+
+        $this->{'set' . ucfirst($stockField)}($currentStock - $quantity);
+    }
+
+    public function __serialize(): array
+    { 
+        return [$this->id]; 
+    } 
+
+    public function __unserialize(array $data): void 
+    { 
+        [$this->id] = $data;
     }
 }

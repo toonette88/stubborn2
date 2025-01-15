@@ -1,6 +1,6 @@
 <div class="col">
   <div class="card" style="width: 18rem;">
-    <img src="{{ asset('images/' ~ product.image ) }}" class="card-img-top" alt="{{ product.name }}">
+    <img src="{{ vich_uploader_asset(product, 'imageFile') }}" class="card-img-top" alt="{{ product.name }}">
     <div class="d-inline-flex card-body">
       <div class="col">
         <p class="card-text --bs-emphasis-color">Nom : {{ product.name }}</p>

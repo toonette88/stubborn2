@@ -15,7 +15,7 @@ class Cart
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'cart')]
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'cart', cascade:['persist','remove'])]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
     private ?User $user = null;
 
@@ -69,4 +69,13 @@ class Cart
 
         return $this;
     }
+
+    public function calculateTotal(): float
+    {
+        $total = 0;
+        foreach ($this->items as $item) {
+            $total += $item->getProduct()->getPrice() * $item->getQuantity();
+        }
+        return $total;
+}
 }

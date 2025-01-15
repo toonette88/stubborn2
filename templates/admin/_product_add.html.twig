@@ -1,0 +1,32 @@
+<div class="card mb-3 d-flex flex-column">
+    {{ form_start(addForm) }}
+    <div class="row g-0">
+        <!-- Image du produit -->
+        <div class="col-md-3 p-2">
+            <p>{{ form_row(addForm.imageFile) }}</p>          
+        </div>
+
+        <!-- Détails du produit -->
+        <div class="col-md-8">
+            <div class="card-body d-flex flex-column">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td>{{ form_row(addForm.name) }}</td>
+                            <td>{{ form_row(addForm.price) }}</td>
+                            <td>{{ form_row(addForm.stockXS) }}</td>
+                            <td>{{ form_row(addForm.stockS) }}</td>
+                            <td>{{ form_row(addForm.stockM) }}</td>
+                            <td>{{ form_row(addForm.stockL) }}</td>
+                            <td>{{ form_row(addForm.stockXL) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="mt-auto d-flex justify-content-end">
+                    <button type="submit" class="btn border border-black uniform-size">{{ button_label }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ form_end(addForm) }}
+</div>

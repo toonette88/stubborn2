@@ -17,7 +17,7 @@ class CartItem
     private ?Cart $cart = null;
 
     #[ORM\ManyToOne(targetEntity: Product::class)]
-    private ?Product $product = null;
+    private ?Product $product = null;   
 
     #[ORM\Column]
     private ?int $quantity;

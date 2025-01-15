@@ -1,6 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './bootstrap.js';
-import './js/passwordCheck.js';
 
 /*
  * Welcome to your app's main JavaScript file!
@@ -23,4 +22,3 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');

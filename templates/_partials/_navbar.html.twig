@@ -18,9 +18,13 @@
                     <a class="nav-link active" aria-current="page" href="/">Accueil</a>
                     {% if app.user  %}
                         <a class="nav-link" href="/product">Boutique</a>
+                         {% if is_granted('ROLE_ADMIN') %}
+                            <a class="nav-link" href="/admin/backoffice">Backoffice</a>
+                        {% else %}
                         {% if is_granted('ROLE_USER') %}
                             <a class="nav-link" href="/cart">Panier</a>
                         {% endif %}
+                    {% endif %}
                         <a class="nav-link" href="/logout">Se déconnecter</a>
                     {% else  %}    
                         <a class="nav-link" href="/register">S'inscrire</a>

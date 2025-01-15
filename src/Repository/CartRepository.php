@@ -1,14 +1,12 @@
 <?php
-
 namespace App\Repository;
 
+use App\Entity\CartItem;
 use App\Entity\Cart;
+use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Cart>
- */
 class CartRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,37 +14,17 @@ class CartRepository extends ServiceEntityRepository
         parent::__construct($registry, Cart::class);
     }
 
-    // Sauvegarder le panier après modification
-    public function save(Cart $cart, bool $flush = false): void
+    /**
+     * Trouve un CartItem par son panier, produit, et taille
+     */
+    public function findCartItem(Cart $cart, Product $product, string $size): ?CartItem
     {
-        $this->_em->persist($cart);
-        if ($flush) {
-            $this->_em->flush();
-        }
+        return $this->getEntityManager()
+            ->getRepository(CartItem::class)
+            ->findOneBy([
+                'cart' => $cart,
+                'product' => $product,
+                'size' => $size,
+            ]);
     }
-
-    //    /**
-    //     * @return Cart[] Returns an array of Cart objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Cart
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }
