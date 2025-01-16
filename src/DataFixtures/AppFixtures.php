@@ -38,7 +38,7 @@ class AppFixtures extends Fixture
         $user->setName('admin');
         $user->setEmail('admin@example.fr');
         $user->setAddress(mt_rand(0,100).' rue de Paris 78646 Versailles');
-        $user->setRoles(['USER_ADMIN']);
+        $user->setRoles(['ROLE_ADMIN']);
 
         $password = $this->hasher->hashPassword($user, 'pass_1234');
         $user->setPassword($password);
